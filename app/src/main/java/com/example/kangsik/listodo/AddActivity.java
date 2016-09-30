@@ -33,6 +33,24 @@ public class AddActivity extends AppCompatActivity  {
         String title = extras.getString("TASK_TITLE");
         editTextTitle.setText(title);
         textViewDate = (TextView) findViewById(R.id.textViewDate);
+/*
+        Button btnCreate = (Button) findViewById(btnCreate);
+
+
+        btnCreate.setOnClickListener(
+                new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent mainIntent = new Intent(this, MainActivity.class);
+                        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
+                        String itemText = etNewItem.getText().toString();
+                        addIntent.putExtra("TASK_TITLE", itemText);
+                        startActivity(addIntent);
+                    }
+                }
+
+        );
+        */
 
     }
 
@@ -53,6 +71,13 @@ public class AddActivity extends AppCompatActivity  {
     }
 
     */
+    public void onCreateItem(View v) {
+
+    }
+
+
+
+
     public void showDatePickerDialog(View v) {
         DialogFragment newFragment = new DatePickerFragment();
         newFragment.show(getSupportFragmentManager(), "datePicker");
@@ -99,8 +124,6 @@ public class AddActivity extends AppCompatActivity  {
         */
 
             textViewDate.setText(month + "/" + day + "/" + year);
-
-
         }
 
 

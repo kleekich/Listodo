@@ -19,6 +19,9 @@ import android.widget.TextView;
 public class EditNameDialogFragment extends DialogFragment implements TextView.OnEditorActionListener{
     private EditText mEditText;
 
+    private static EditText editTextTitle;
+    private static TextView textViewDate;
+
 
     public interface EditNameDialogListener {
         void onFinishEditDialog(String inputText);
@@ -41,22 +44,23 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_edit_name, container);
+        return inflater.inflate(R.layout.activity_add, container);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get field from view
-        mEditText = (EditText) view.findViewById(R.id.txt_your_name);
+        editTextTitle = (EditText) view.findViewById(R.id.editTextTitle);
+        textViewDate = (TextView) view.findViewById(R.id.textViewDate);
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle(title);
         // Show soft keyboard automatically and request focus to field
-        mEditText.requestFocus();
+        editTextTitle.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        mEditText.setOnEditorActionListener(this);
+        editTextTitle.setOnEditorActionListener(this);
     }
 
     // Fires whenever the textfield has an action performed
@@ -67,7 +71,7 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
         if (EditorInfo.IME_ACTION_DONE == actionId) {
             // Return input text back to activity through the implemented listener
             EditNameDialogListener listener = (EditNameDialogListener) getActivity();
-            listener.onFinishEditDialog(mEditText.getText().toString());
+            listener.onFinishEditDialog(editTextTitle.getText().toString());
             // Close the dialog and return back to the parent activity
             dismiss();
             return true;
@@ -79,7 +83,7 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
     public void sendBackResult() {
         // Notice the use of `getTargetFragment` which will be set when the dialog is displayed
         EditNameDialogListener listener = (EditNameDialogListener) getTargetFragment();
-        listener.onFinishEditDialog(mEditText.getText().toString());
+        listener.onFinishEditDialog(editTextTitle.getText().toString());
         dismiss();
     }
 

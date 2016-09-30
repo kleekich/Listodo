@@ -8,6 +8,7 @@ import java.util.*;
 public class Task {
     private String title;
     private String description;
+    private int priority;
     private Date dueDate;
 
     public Task(String t, String d, Date dd){
