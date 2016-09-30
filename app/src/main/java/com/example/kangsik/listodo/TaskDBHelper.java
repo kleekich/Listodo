@@ -22,7 +22,7 @@ public class TaskDBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        final String SQL_CREATE_TASK_TABLE = "CREATE_TABLE " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + " INTEGER PRIMARY KEY," +
+        final String SQL_CREATE_TASK_TABLE = "CREATE TABLE " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + " INTEGER PRIMARY KEY," +
                 TaskEntry.COLUMN_TITLE+ " TEXT NOT NULL, " +
                 TaskEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                 TaskEntry.COLUMN_DATE + " TEXT NOT NULL, " +

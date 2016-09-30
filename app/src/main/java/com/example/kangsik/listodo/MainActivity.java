@@ -1,6 +1,5 @@
 package com.example.kangsik.listodo;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,20 +9,19 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import static com.example.kangsik.listodo.TaskContract.TaskEntry;
 
-public class MainActivity extends AppCompatActivity implements com.example.kangsik.listodo.EditNameDialogFragment.EditNameDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-
-    Context context;
-
+    // The callbacks through which we will interact with the LoaderManager.
+    private LoaderManager.LoaderCallbacks<Cursor> mCallbacks;
     private TaskAdapter mTaskAdapter;
     private ListView listView;
     private int mPosition = ListView.INVALID_POSITION;
@@ -44,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
         super.onSaveInstanceState(outState);
     }
 
-    private Uri mUri;
 
     private static final String[] DETAIL_COLUMS = {
             TaskEntry.TABLE_NAME + "." + TaskEntry._ID,
@@ -59,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mCallbacks = this;
         mTaskAdapter = new TaskAdapter(this, null, 0);
         listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(mTaskAdapter);
@@ -67,6 +65,17 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if (cursor != null){
+                    int _id = cursor.getInt(COL_ID);
+                    String title = cursor.getString(COL_TITLE);
+                    String desc = cursor.getString(COL_DESCRIPTION);
+                    String date = cursor.getString(COL_DATE);
+                    String prio = cursor.getString(COL_PRIORITY);
+                    Log.d("MainActivity", String.valueOf(_id));
+                    Log.d("MainActivity", title);
+                    FragmentManager fm = getSupportFragmentManager();
+                    EditNameDialogFragment editNameDialogFragment = EditNameDialogFragment.newInstance(_id,title,desc,date,prio);
+                    editNameDialogFragment.show(fm, "fragment_edit_name");
+
                 }
                 mPosition = position;
             }
@@ -92,37 +101,8 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
 
         );
 
-    }
-
-
-
-    private void showEditDialog(String title) {
-        FragmentManager fm = getSupportFragmentManager();
-        EditNameDialogFragment editNameDialogFragment = EditNameDialogFragment.newInstance(title);
-        editNameDialogFragment.show(fm, "fragment_edit_name");
-    }
-
-    public void onAddItem(View v) {
-        /*
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
-        itemsAdapter.add(itemText);
-        etNewItem.setText("");
-        writeItems();
-        */
-        Intent addIntent = new Intent(this, AddActivity.class);
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
-        addIntent.putExtra("TASK_TITLE", itemText);
-        startActivity(addIntent);
-    }
-
-
-
-
-    @Override
-    public void onFinishEditDialog(String inputText) {
-        Toast.makeText(this, "Hi, " + inputText, Toast.LENGTH_SHORT).show();
+        LoaderManager lm = getSupportLoaderManager();
+        lm.initLoader(0, null, mCallbacks);
     }
 
 
@@ -130,10 +110,9 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = TaskEntry._ID + "DESC";
-
+        String sortOrder = TaskEntry._ID + " DESC";
         Uri taskUri = TaskEntry.CONTENT_URI;
-        return new CursorLoader(this,
+        return new CursorLoader(getApplicationContext(),
                 taskUri,
                 DETAIL_COLUMS,
                 null,

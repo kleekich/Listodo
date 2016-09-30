@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by Kangsik on 9/29/16.
@@ -78,12 +79,14 @@ public class TaskProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
-
+        Log.d("TaskProvider", "url: " + uri.toString());
         switch(match) {
             case TASK:
                 long _id = db.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
-                if ( _id >0)
+                if ( _id >0) {
                     returnUri = TaskContract.TaskEntry.buildTaskUri(_id);
+                    Log.d("TaskProvider", returnUri.toString());
+                }
                 else
                     throw new android.database.SQLException("Failed to insert row into "+ uri);
                 break;

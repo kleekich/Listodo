@@ -18,6 +18,14 @@
         <activity
             android:name=".AddActivity"
             android:parentActivityName=".MainActivity" />
+        <provider
+            android:authorities="com.example.kangsik.listodo"
+            android:name=".TaskProvider"
+            android:exported="false"
+            android:readPermission="com.example.kangsik.listtodo.READWRITE"
+            android:writePermission="com.example.kangsik.listtodo.READWRITE"
+            android:syncable="true" />
+
     </application>
 
 </manifest>

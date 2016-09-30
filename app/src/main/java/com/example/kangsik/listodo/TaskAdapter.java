@@ -3,6 +3,7 @@ package com.example.kangsik.listodo;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,19 @@ public class TaskAdapter extends CursorAdapter {
         String description = cursor.getString(MainActivity.COL_DESCRIPTION);
         String date = cursor.getString(MainActivity.COL_DATE);
         String priority = cursor.getString(MainActivity.COL_PRIORITY);
+        Log.d("TaskAdapter", title);
+        Log.d("TaskAdapter", description);
         viewHolder.textViewTitle.setText(title);
         viewHolder.textViewDescription.setText(description);
         viewHolder.textViewDate.setText(date);
         viewHolder.textViewPriority.setText(priority);
+    }
+
+    @Override
+    public int getCount() {
+        if (getCursor() == null) {
+            return 0;
+        }
+        return super.getCount();
     }
 }
