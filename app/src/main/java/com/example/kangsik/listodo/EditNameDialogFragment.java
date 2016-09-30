@@ -1,5 +1,7 @@
 package com.example.kangsik.listodo;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
@@ -13,23 +15,24 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import static com.example.kangsik.listodo.R.id.buttonCreate;
+import java.util.Calendar;
 
 
 /**
  * Created by Kangsik on 9/28/16.
  */
 public class EditNameDialogFragment extends DialogFragment implements TextView.OnEditorActionListener{
-    private EditText mEditText;
 
     private static EditText editTextTitle;
     private static EditText editTextDescription;
     private static TextView textViewDate;
     private static Button buttonEdit;
+    private static Button buttonSetDate;
     private static Spinner spinner;
 
 
@@ -68,7 +71,8 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
         editTextTitle = (EditText) view.findViewById(R.id.editTextTitle);
         editTextDescription = (EditText) view.findViewById(R.id.editTextDescription);
         textViewDate = (TextView) view.findViewById(R.id.textViewDate);
-        buttonEdit = (Button) view.findViewById(buttonCreate);
+        buttonEdit = (Button) view.findViewById(R.id.buttonCreate);
+        buttonSetDate = (Button) view.findViewById(R.id.buttonSetDate);
         spinner = (Spinner) view.findViewById(R.id.spinner);
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
@@ -91,6 +95,16 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         editTextTitle.setOnEditorActionListener(this);
 
+
+        buttonSetDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getFragmentManager(), "datePicker");
+            }
+        });
+
+
         buttonEdit.setText("Done");
         buttonEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +113,7 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
                 dismiss();
             }
         });
+
     }
 
     public final void editItem(){
@@ -136,6 +151,33 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
         EditNameDialogListener listener = (EditNameDialogListener) getTargetFragment();
         listener.onFinishEditDialog(editTextTitle.getText().toString());
         dismiss();
+    }
+
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new AddActivity.DatePickerFragment();
+        newFragment.show(getFragmentManager(), "datePicker");
+    }
+
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day = c.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            textViewDate.setText(month + "/" + day + "/" + year);
+        }
+
+
     }
 
 

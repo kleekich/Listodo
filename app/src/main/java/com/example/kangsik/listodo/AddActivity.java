@@ -80,28 +80,6 @@ public class AddActivity extends AppCompatActivity  {
         contentResolver.insert(uri, values);
     }
 
-    /*
-    public void onCreateItem(View v) {
-
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
-        itemsAdapter.add(itemText);
-        etNewItem.setText("");
-        writeItems();
-
-        Intent addIntent = new Intent(this, AddActivity.class);
-        EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
-        String itemText = etNewItem.getText().toString();
-        addIntent.putExtra("TASK_TITLE", itemText);
-        startActivity(addIntent);
-    }
-
-    */
-    public void onCreateItem(View v) {
-
-    }
-
-
 
 
     public void showDatePickerDialog(View v) {

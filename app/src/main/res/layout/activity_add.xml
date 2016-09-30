@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             android:onClick="showDatePickerDialog"
             android:text="Set Due Date"
-            android:layout_weight="1.63" />
+            android:layout_weight="1.63"
+            android:id="@+id/buttonSetDate" />
 
     </LinearLayout>
 
