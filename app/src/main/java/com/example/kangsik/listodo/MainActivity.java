@@ -16,9 +16,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import static com.example.kangsik.listodo.R.layout.task_list_item;
 import static com.example.kangsik.listodo.TaskContract.TaskEntry;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public final boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                        delete(view, position);
+                        delete(parent, view, position);
                         return true;
                     }
                 }
@@ -132,14 +130,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     */
 
 
-    private final void delete(View view, int position) {
+    private final void delete(AdapterView<?> parent, View view, int position) {
+        Cursor cursor = (Cursor) parent.getItemAtPosition(position);
         ContentResolver contentResolver = getContentResolver();
-        int id = R.layout.task_list_item;
-        String _ID = Integer.toString(id);
-        Uri uri = TaskContract.TaskEntry.buildTaskUri(_ID);
-        contentResolver.delete(uri, null, null);
-        mTaskAdapter.delete(position);
-
+        String _id = String.valueOf(cursor.getLong(COL_ID));
+        Uri uri = TaskEntry.CONTENT_URI;
+        final String sLocationSettingSelection =
+                TaskContract.TaskEntry.TABLE_NAME+
+                        "." + TaskContract.TaskEntry._ID + " = " + _id;
+        contentResolver.delete(uri, sLocationSettingSelection, null);
+        this.getSupportLoaderManager().restartLoader(0, null, mCallbacks);
     }
 
 
