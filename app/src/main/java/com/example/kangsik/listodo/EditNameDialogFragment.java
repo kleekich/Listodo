@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -86,6 +87,8 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
         textViewDate.setText(date);
 
         String prio = getArguments().getString("prio", "");
+        spinner.setSelection(((ArrayAdapter<String>)spinner.getAdapter()).getPosition(prio));
+
 
 
 

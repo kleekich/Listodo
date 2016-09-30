@@ -46,11 +46,7 @@ public class AddActivity extends AppCompatActivity  {
         Bundle extras = intent.getExtras();
         String title = extras.getString("TASK_TITLE");
         editTextTitle.setText(title);
-
-
-
-
-
+        editTextDescription.requestFocus();
         buttonCreate.setOnClickListener(
                 new Button.OnClickListener() {
                     @Override
@@ -72,7 +68,6 @@ public class AddActivity extends AppCompatActivity  {
         values.put(TaskContract.TaskEntry.COLUMN_DESCRIPTION, editTextDescription.getText().toString());
         values.put(TaskContract.TaskEntry.COLUMN_DATE, textViewDate.getText().toString());
         values.put(TaskContract.TaskEntry.COLUMN_PRIORITY, spinner.getSelectedItem().toString());
-
 
         Log.d("AddActivity", values.toString());
         ContentResolver contentResolver = getContentResolver();

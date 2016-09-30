@@ -106,6 +106,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
 
+    /*
+    public final void deleteItem(){
+        ContentResolver contentResolver = getContentResolver();
+        Uri uri = TaskContract.TaskEntry.CONTENT_URI;
+        String id = String.valueOf(getArguments().getInt("id", 0));
+        String selection = TaskContract.TaskEntry._ID + " = " + id;
+        contentResolver.delete(uri, selection, null);
+    }
+    */
+
 
 
     @Override
