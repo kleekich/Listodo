@@ -12,17 +12,10 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.example.kangsik.listodo.TaskContract.TaskEntry;
 
@@ -30,9 +23,26 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
 
 
     Context context;
-    ArrayList<String> items;
-    ArrayAdapter<String> itemsAdapter;
-    ListView lvItems;
+
+    private TaskAdapter mTaskAdapter;
+    private ListView listView;
+    private int mPosition = ListView.INVALID_POSITION;
+    private static final String SELECTED_KEY = "selected_position";
+
+
+    static final int COL_ID = 0;
+    static final int COL_TITLE = 1;
+    static final int COL_DESCRIPTION = 2;
+    static final int COL_DATE = 3;
+    static final int COL_PRIORITY = 4;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != ListView.INVALID_POSITION){
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     private Uri mUri;
 
@@ -48,18 +58,31 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        lvItems = (ListView) findViewById(R.id.lvItems);
-        readItems();
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        lvItems.setAdapter(itemsAdapter);
+
+        mTaskAdapter = new TaskAdapter(this, null, 0);
+        listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(mTaskAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                if (cursor != null){
+                }
+                mPosition = position;
+            }
+        });
+
+        if(savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)){
+          mPosition = savedInstanceState.getInt(SELECTED_KEY);
+        }
+
         Button btnAddItem = (Button) findViewById(R.id.btnAddItem);
 
-        context = this;
         btnAddItem.setOnClickListener(
                 new Button.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent addIntent = new Intent(context, AddActivity.class);
+                        Intent addIntent = new Intent(getApplicationContext(), AddActivity.class);
                         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
                         String itemText = etNewItem.getText().toString();
                         addIntent.putExtra("TASK_TITLE", itemText);
@@ -68,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
                 }
 
         );
-        setupListViewListener();
 
     }
 
@@ -96,38 +118,7 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
     }
 
 
-    private void setupListViewListener() {
-        lvItems.setOnItemLongClickListener(
-                new AdapterView.OnItemLongClickListener() {
-                    @Override
-                    public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
-                        items.remove(pos);
-                        itemsAdapter.notifyDataSetChanged();
-                        writeItems();
-                        return true;
-                    }
 
-                });
-        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                /*
-                Intent disscussIntent = new Intent(context, MessageActivity.class);
-                Bundle extras = new Bundle();
-
-
-
-                extras.putString("MENTOR_NAME", mentorName);
-
-                disscussIntent.putExtras(extras);
-                startActivity(disscussIntent);
-                */
-                String todoItem = (String) adapterView.getItemAtPosition(position);
-                //EditNameDialogFragment frag = new EditNameDialogFragment.newInstance(todoItem);
-                showEditDialog(todoItem);
-            }
-        });
-    }
 
     @Override
     public void onFinishEditDialog(String inputText) {
@@ -135,26 +126,7 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
     }
 
 
-    private void readItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
-        try {
-            items = new ArrayList<String>(FileUtils.readLines(todoFile));
 
-        }catch (IOException e) {
-            items = new ArrayList<String>();
-        }
-    }
-
-    private void writeItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
-        try {
-            FileUtils.writeLines(todoFile, items);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -171,14 +143,14 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && data.moveToFirst()) {
-            int taskId = data.getInt(COL_TASK_CONDITION_ID);
+        mTaskAdapter.swapCursor(data);
+        if (mPosition != ListView.INVALID_POSITION){
+            listView.smoothScrollToPosition(mPosition);
         }
-
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mTaskAdapter.swapCursor(null);
     }
 }
