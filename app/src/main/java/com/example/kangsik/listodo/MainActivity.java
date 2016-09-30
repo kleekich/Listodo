@@ -1,8 +1,14 @@
 package com.example.kangsik.listodo;
+
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,13 +24,25 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements com.example.kangsik.listodo.EditNameDialogFragment.EditNameDialogListener {
+import static com.example.kangsik.listodo.TaskContract.TaskEntry;
+
+public class MainActivity extends AppCompatActivity implements com.example.kangsik.listodo.EditNameDialogFragment.EditNameDialogListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 
     Context context;
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+
+    private Uri mUri;
+
+    private static final String[] DETAIL_COLUMS = {
+            TaskEntry.TABLE_NAME + "." + TaskEntry._ID,
+            TaskEntry.COLUMN_TITLE,
+            TaskEntry.COLUMN_DESCRIPTION,
+            TaskEntry.COLUMN_DATE,
+            TaskEntry.COLUMN_PRIORITY
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,4 +156,29 @@ public class MainActivity extends AppCompatActivity implements com.example.kangs
         }
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String sortOrder = TaskEntry._ID + "DESC";
+
+        Uri taskUri = TaskEntry.CONTENT_URI;
+        return new CursorLoader(this,
+                taskUri,
+                DETAIL_COLUMS,
+                null,
+                null,
+                sortOrder);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.moveToFirst()) {
+            int taskId = data.getInt(COL_TASK_CONDITION_ID);
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }
