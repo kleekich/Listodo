@@ -19,12 +19,14 @@ public class TaskAdapter extends CursorAdapter {
 
 
     public static class ViewHolder {
+        public final TextView textViewId;
         public final TextView textViewTitle;
         public final TextView textViewDescription;
         public final TextView textViewDate;
         public final TextView textViewPriority;
 
         public ViewHolder(View view){
+            textViewId = (TextView) view.findViewById(R.id.textViewId);
             textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
             textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
             textViewDate = (TextView) view.findViewById(R.id.textViewDate);
@@ -51,12 +53,14 @@ public class TaskAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
+        String id = cursor.getString(MainActivity.COL_ID);
         String title = cursor.getString(MainActivity.COL_TITLE);
         String description = cursor.getString(MainActivity.COL_DESCRIPTION);
         String date = cursor.getString(MainActivity.COL_DATE);
         String priority = cursor.getString(MainActivity.COL_PRIORITY);
         Log.d("TaskAdapter", title);
         Log.d("TaskAdapter", description);
+        viewHolder.textViewId.setText(id);
         viewHolder.textViewTitle.setText(title);
         viewHolder.textViewDescription.setText(description);
         viewHolder.textViewDate.setText(date);

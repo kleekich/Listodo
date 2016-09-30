@@ -1,5 +1,6 @@
 package com.example.kangsik.listodo;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,7 +16,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import static com.example.kangsik.listodo.R.layout.task_list_item;
 import static com.example.kangsik.listodo.TaskContract.TaskEntry;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -80,6 +83,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mPosition = position;
             }
         });
+        listView.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public final boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        delete(view, position);
+                        return true;
+                    }
+                }
+        );
+
+
+
 
         if(savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)){
           mPosition = savedInstanceState.getInt(SELECTED_KEY);
@@ -115,6 +130,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         contentResolver.delete(uri, selection, null);
     }
     */
+
+
+    private final void delete(View view, int position) {
+        ContentResolver contentResolver = getContentResolver();
+        int id = R.layout.task_list_item;
+        String _ID = Integer.toString(id);
+        Uri uri = TaskContract.TaskEntry.buildTaskUri(_ID);
+        contentResolver.delete(uri, null, null);
+        mTaskAdapter.delete(position);
+
+    }
 
 
 
