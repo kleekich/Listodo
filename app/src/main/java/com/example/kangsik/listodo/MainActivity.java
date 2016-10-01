@@ -10,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -71,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     String desc = cursor.getString(COL_DESCRIPTION);
                     String date = cursor.getString(COL_DATE);
                     String prio = cursor.getString(COL_PRIORITY);
-                    Log.d("MainActivity", String.valueOf(_id));
-                    Log.d("MainActivity", title);
                     FragmentManager fm = getSupportFragmentManager();
                     EditNameDialogFragment editNameDialogFragment = EditNameDialogFragment.newInstance(_id,title,desc,date,prio);
                     editNameDialogFragment.show(fm, "fragment_edit_name");
@@ -117,17 +114,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         LoaderManager lm = getSupportLoaderManager();
         lm.initLoader(0, null, mCallbacks);
     }
-
-
-    /*
-    public final void deleteItem(){
-        ContentResolver contentResolver = getContentResolver();
-        Uri uri = TaskContract.TaskEntry.CONTENT_URI;
-        String id = String.valueOf(getArguments().getInt("id", 0));
-        String selection = TaskContract.TaskEntry._ID + " = " + id;
-        contentResolver.delete(uri, selection, null);
-    }
-    */
 
 
     private final void delete(AdapterView<?> parent, View view, int position) {

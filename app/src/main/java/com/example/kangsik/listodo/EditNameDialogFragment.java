@@ -78,6 +78,10 @@ public class EditNameDialogFragment extends DialogFragment implements TextView.O
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
         getDialog().setTitle("Edit Task");
+        //int width = getResources().getDimensionPixelSize(R.dimen.popup_width);
+        //int height = getResources().getDimensionPixelSize(R.dimen.popup_height);
+        //getDialog().getWindow().setLayout(1000, 4500);
+
         editTextTitle.setText(title);
 
         String desc = getArguments().getString("desc", "");
